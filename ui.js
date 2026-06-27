@@ -98,6 +98,9 @@ function clearScoreBadges() {
         b.classList.remove('visible');
         b.textContent = '';
     });
+    document.querySelectorAll('.drop-zone').forEach(z => {
+        z.classList.remove('suggested-move');
+    });
 }
 
 function makeMove(col) {
@@ -186,23 +189,32 @@ function updateScoreBadges() {
         
         // Emphasize the best move
         if (score === bestScore) {
+            zone.classList.add('suggested-move');
             badge.style.transform = 'translateX(-50%) scale(1.3)';
             badge.style.boxShadow = '0 0 10px rgba(255,255,255,0.5)';
             badge.style.zIndex = '100';
+            badge.innerHTML = '⬇ ' + (score > 0 ? '+' + score : score);
+            if (score === 0) badge.innerHTML = '⬇ 0';
         } else {
+            zone.classList.remove('suggested-move');
             badge.style.transform = 'translateX(-50%) scale(1)';
             badge.style.boxShadow = 'none';
             badge.style.zIndex = '1';
+            
+            if (score > 0) {
+                badge.textContent = '+' + score;
+            } else if (score < 0) {
+                badge.textContent = score;
+            } else {
+                badge.textContent = '0';
+            }
         }
         
         if (score > 0) {
-            badge.textContent = '+' + score;
             badge.classList.add('positive');
         } else if (score < 0) {
-            badge.textContent = score;
             badge.classList.add('negative');
         } else {
-            badge.textContent = '0';
             badge.classList.add('zero');
         }
     });
