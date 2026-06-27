@@ -342,6 +342,31 @@ select:focus {
     opacity: 0.5;
 }
 
+.score-badge {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.score-badge.visible {
+    opacity: 1;
+}
+
+.score-badge.positive { color: #4ade80; }
+.score-badge.negative { color: #f87171; }
+.score-badge.zero { color: #94a3b8; }
+
 .board {
     display: grid;
     grid-template-columns: repeat(7, 1fr);

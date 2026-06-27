@@ -33,10 +33,9 @@
                         <select id="difficulty-select">
                             <option value="4">Easy (Depth 4)</option>
                             <option value="6">Medium (Depth 6)</option>
-                            <option value="8" selected>Hard (Depth 8)</option>
+                            <option value="8">Hard (Depth 8)</option>
                             <option value="11">Expert (Depth 11)</option>
-                            <option value="14">Master (Depth 14)</option>
-                            <option value="16">Grandmaster (Depth 16)</option>
+                            <option value="100" selected>Optimal (API)</option>
                         </select>
                     </div>
                     <div class="setting-group">
@@ -69,13 +68,13 @@
             <div class="board-wrapper">
                 <!-- Drop zones for column hovering -->
                 <div class="drop-zones" id="drop-zones">
-                    <div class="drop-zone" data-col="0"></div>
-                    <div class="drop-zone" data-col="1"></div>
-                    <div class="drop-zone" data-col="2"></div>
-                    <div class="drop-zone" data-col="3"></div>
-                    <div class="drop-zone" data-col="4"></div>
-                    <div class="drop-zone" data-col="5"></div>
-                    <div class="drop-zone" data-col="6"></div>
+                    <div class="drop-zone" data-col="0"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="1"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="2"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="3"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="4"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="5"><div class="score-badge"></div></div>
+                    <div class="drop-zone" data-col="6"><div class="score-badge"></div></div>
                 </div>
                 
                 <!-- The actual board -->

@@ -21,7 +21,8 @@ let gameState = {
     currentPlayer: 1, // 1 for Red, 2 for Yellow
     isThinking: false,
     gameOver: false,
-    depth: 8
+    depth: 100, // 100 means API Optimal
+    apiScores: null
 };
 
 // 1 = Red, 2 = Yellow. The bitboard doesn't inherently care about colors, 
@@ -64,9 +65,14 @@ function startNewGame() {
     gameState.isThinking = false;
     gameState.gameOver = false;
     gameState.depth = parseInt(difficultySelect.value);
+    gameState.apiScores = null;
     
     document.querySelectorAll('.piece').forEach(p => p.remove());
     document.querySelectorAll('.cell.win').forEach(c => c.classList.remove('win'));
+    document.querySelectorAll('.score-badge').forEach(b => {
+        b.classList.remove('visible');
+        b.textContent = '';
+    });
     modal.classList.add('hidden');
     
     evalEl.textContent = '0';
@@ -74,6 +80,7 @@ function startNewGame() {
     timeEl.textContent = '0ms';
     
     updateStatus();
+    fetchOptimalScores();
     
     // If AI goes first
     if (gameState.humanPlayer === 2) {
@@ -131,17 +138,93 @@ function makeMove(col) {
     
     gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
     updateStatus();
+    fetchOptimalScores().then(() => {
+        if (gameState.currentPlayer !== gameState.humanPlayer && !gameState.gameOver) {
+            requestAIMove();
+        }
+    });
+}
+
+async function fetchOptimalScores() {
+    if (gameState.gameOver) return;
     
-    if (gameState.currentPlayer !== gameState.humanPlayer && !gameState.gameOver) {
-        requestAIMove();
+    const posStr = gameState.moves.map(m => m + 1).join('');
+    try {
+        const res = await fetch('https://connect4.gamesolver.org/solve?pos=' + posStr);
+        const data = await res.json();
+        gameState.apiScores = data.score;
+        updateScoreBadges();
+    } catch (e) {
+        console.error('API Fetch failed', e);
+        gameState.apiScores = null;
     }
+}
+
+function updateScoreBadges() {
+    const scores = gameState.apiScores;
+    if (!scores) return;
+    
+    dropZones.forEach((zone, col) => {
+        const badge = zone.querySelector('.score-badge');
+        const score = scores[col];
+        if (score === 100) {
+            badge.classList.remove('visible');
+            return;
+        }
+        
+        badge.classList.add('visible');
+        badge.classList.remove('positive', 'negative', 'zero');
+        
+        if (score > 0) {
+            badge.textContent = '+' + score;
+            badge.classList.add('positive');
+        } else if (score < 0) {
+            badge.textContent = score;
+            badge.classList.add('negative');
+        } else {
+            badge.textContent = '0';
+            badge.classList.add('zero');
+        }
+    });
 }
 
 function requestAIMove() {
     gameState.isThinking = true;
     updateStatus();
     
-    // Small timeout to allow UI to update
+    // If we want Optimal API move
+    if (gameState.depth === 100 && gameState.apiScores) {
+        setTimeout(() => {
+            const scores = gameState.apiScores;
+            let bestScore = -1000;
+            let bestMoves = [];
+            
+            for (let i = 0; i < 7; i++) {
+                if (scores[i] !== 100 && scores[i] > bestScore) {
+                    bestScore = scores[i];
+                }
+            }
+            
+            for (let i = 0; i < 7; i++) {
+                if (scores[i] === bestScore) {
+                    bestMoves.push(i);
+                }
+            }
+            
+            // Pick a move closest to the center
+            bestMoves.sort((a, b) => Math.abs(a - 3) - Math.abs(b - 3));
+            const move = bestMoves[0];
+            
+            evalEl.textContent = (bestScore > 0 ? '+' : '') + bestScore + ' (API)';
+            nodesEl.textContent = '0';
+            timeEl.textContent = '<1ms';
+            
+            makeMove(move);
+        }, 300);
+        return;
+    }
+    
+    // Fallback to offline worker
     setTimeout(() => {
         worker.postMessage({
             moves: gameState.moves,
