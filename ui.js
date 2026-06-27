@@ -101,6 +101,9 @@ function clearScoreBadges() {
     document.querySelectorAll('.drop-zone').forEach(z => {
         z.classList.remove('suggested-move');
     });
+    document.querySelectorAll('.cell').forEach(c => {
+        c.classList.remove('suggested-target');
+    });
 }
 
 function makeMove(col) {
@@ -190,6 +193,19 @@ function updateScoreBadges() {
         // Emphasize the best move
         if (score === bestScore) {
             zone.classList.add('suggested-move');
+            
+            // Find the specific cell to highlight
+            let targetRow = -1;
+            for (let r = 0; r < 6; r++) {
+                if (!document.querySelector(`#cell-${col}-${r} .piece`)) {
+                    targetRow = r;
+                    break;
+                }
+            }
+            if (targetRow !== -1) {
+                document.getElementById(`cell-${col}-${targetRow}`).classList.add('suggested-target');
+            }
+            
             badge.style.transform = 'translateX(-50%) scale(1.3)';
             badge.style.boxShadow = '0 0 10px rgba(255,255,255,0.5)';
             badge.style.zIndex = '100';
@@ -197,6 +213,12 @@ function updateScoreBadges() {
             if (score === 0) badge.innerHTML = '⬇ 0';
         } else {
             zone.classList.remove('suggested-move');
+            
+            // Remove target highlight from this column if any
+            for (let r = 0; r < 6; r++) {
+                document.getElementById(`cell-${col}-${r}`).classList.remove('suggested-target');
+            }
+            
             badge.style.transform = 'translateX(-50%) scale(1)';
             badge.style.boxShadow = 'none';
             badge.style.zIndex = '1';

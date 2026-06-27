@@ -377,24 +377,33 @@ select:focus {
     opacity: 0.5;
 }
 
-.drop-zone.suggested-move::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 2px dashed rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    opacity: 1 !important;
-    animation: pulse-border 1.5s infinite;
+.drop-zone.suggested-move {
+    /* Just to keep the class if needed, but no pseudo-element border here */
 }
 
-@keyframes pulse-border {
-    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+.cell.suggested-target {
+    position: relative;
+}
+
+.cell.suggested-target::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    border: 3px dashed rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.2);
+    animation: pulse-circle 1.5s infinite;
+    z-index: 5;
+    pointer-events: none;
+}
+
+@keyframes pulse-circle {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
 
 .score-badge {
