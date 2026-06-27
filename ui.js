@@ -83,8 +83,13 @@ function updateStatus() {
     
     if (gameState.gameOver) {
         statusText.textContent = "Game Over";
+        btnCalculate.textContent = "Game Over";
+        btnCalculate.disabled = true;
     } else {
-        statusText.textContent = (gameState.currentPlayer === 1 ? "Red" : "Yellow") + " to play";
+        const playerColor = gameState.currentPlayer === 1 ? "Red" : "Yellow";
+        statusText.textContent = playerColor + " to play";
+        btnCalculate.textContent = "Calculate Optimal Move for " + playerColor;
+        btnCalculate.disabled = false;
     }
 }
 
@@ -151,7 +156,8 @@ async function calculateOptimalMove() {
         console.error('API Fetch failed', e);
         alert('Failed to connect to the solver API.');
     } finally {
-        btnCalculate.textContent = "Calculate Optimal Move";
+        const playerColor = gameState.currentPlayer === 1 ? "Red" : "Yellow";
+        btnCalculate.textContent = "Calculate Optimal Move for " + playerColor;
         btnCalculate.disabled = false;
     }
 }

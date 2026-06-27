@@ -17,18 +17,25 @@
     <div class="app-container">
         <header>
             <h1>Connect <span>Four</span></h1>
-            <p class="subtitle">Play against an optimal AI</p>
+            <p class="subtitle">Analysis Board / Position Solver</p>
         </header>
 
         <div class="game-area">
             <div class="controls-panel glass-panel">
                 <div class="status-box">
                     <div id="turn-indicator" class="player-indicator"></div>
-                    <span id="status-text">Your Turn!</span>
+                    <span id="status-text">Red to play</span>
+                </div>
+                
+                <div class="legend glass-panel" style="padding: 1rem; margin-top: 1rem; font-size: 0.9rem;">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1rem;">Mitä pisteet tarkoittavat?</h3>
+                    <p><strong style="color: #4ade80;">+ Luku:</strong> Kyseinen pelaaja voi pakottaa voiton.</p>
+                    <p><strong style="color: #f87171;">- Luku:</strong> Kyseinen pelaaja häviää, jos vastustaja pelaa täydellisesti.</p>
+                    <p><strong style="color: #94a3b8;">0:</strong> Tasapeli optimaalisella pelillä.</p>
                 </div>
                 
                 <div class="action-buttons">
-                    <button id="btn-calculate" class="primary-btn calculate-btn">Calculate Optimal Move</button>
+                    <button id="btn-calculate" class="primary-btn calculate-btn">Calculate Optimal Move for Red</button>
                     <div class="secondary-actions">
                         <button id="btn-undo" class="secondary-btn">Undo Move</button>
                         <button id="btn-clear" class="secondary-btn">Clear Board</button>
